@@ -25,7 +25,7 @@ def handle_transaction(
 
     for log in transaction_event.logs:
         for topic in log.topics:
-            if topic.lower == FLASH_LOAN_TOPIC:
+            if topic.lower() == FLASH_LOAN_TOPIC:
                 flash_loan_events.append(log)
 
     if len(flash_loan_events) == 0:
@@ -41,7 +41,7 @@ def handle_transaction(
                         "alert_id": "FORTA-5",
                         "protocol": "AAVE",
                         "type": FindingType.Suspicious,
-                        "severitiy": FindingSeverity.Low
+                        "severity": FindingSeverity.Low
                     }
                 )
             )
