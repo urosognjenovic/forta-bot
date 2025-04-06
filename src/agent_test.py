@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 from forta_agent import TransactionEvent, create_transaction_event
-from agent import handle_transaction, AAVE_V3_ADDRESS
+from agent import handle_transaction, AAVE_V3_ADDRESS, PROTOCOL, FLASH_LOAN_TOPIC
 from typing import List
 
 mock_tx_dictionary = {
@@ -28,3 +28,17 @@ class TestFlashLoanDetector:
         }
         findings: List[TransactionEvent] = handle_transaction(mock_tx_event)
         assert len(findings) == 0
+    
+    def test_returns_finding_in_a_flash_loan(self):
+        mock_tx_event.addresses = {
+            AAVE_V3_ADDRESS: True,
+            PROTOCOL: True
+        }
+        mock_tx_event.logs = [
+            {
+                "topics": [FLASH_LOAN_TOPIC],
+                "address": AAVE_V3_ADDRESS
+            }
+        ]
+        findings: List[TransactionEvent] = handle_transaction(mock_tx_event)
+        assert len(findings) == 1
